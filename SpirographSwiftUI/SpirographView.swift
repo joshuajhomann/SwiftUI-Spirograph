@@ -15,12 +15,13 @@ class SpirographModel: BindableObject {
     static let maxMinorRadius: CGFloat = 100
     static let maxOffset: CGFloat = 50
     static let maxSamples: CGFloat = 100
+    static let iterations = 1000
   }
   let willChange: AnyPublisher<Void, Never>
-  let majorRadius: CurrentValueSubject<CGFloat, Never> = .init(50)
-  let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(100)
-  let pointOffset: CurrentValueSubject<CGFloat, Never> = .init(50)
-  let samples: CurrentValueSubject<CGFloat, Never> = .init(30)
+  let majorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMajorRadius)
+  let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMinorRadius)
+  let pointOffset: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxOffset)
+  let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples)
   private (set) var points: [CGPoint] = []
   private var pointSubscription: AnyCancellable?
   init() {
@@ -35,7 +36,7 @@ class SpirographModel: BindableObject {
       .map { (majorRadius, minorRadius, pointOffset, samples) -> [CGPoint] in
         let Δr = majorRadius - minorRadius
         let Δθ = 2 * CGFloat.pi / samples
-        return (0..<1000).map { iteration in
+        return (0..<Constant.iterations).map { iteration in
           let θ = Δθ * CGFloat(iteration)
           return CGPoint(
             x: CGFloat(Δr * cos(θ) + pointOffset * cos(Δr * θ / minorRadius)),
