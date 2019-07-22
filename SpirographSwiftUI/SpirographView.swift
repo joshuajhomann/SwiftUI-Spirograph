@@ -24,6 +24,7 @@ class SpirographModel: BindableObject {
   let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples/2)
   private (set) var points: [CGPoint] = []
   private var pointSubscription: AnyCancellable?
+
   init() {
     let combined = Publishers.CombineLatest4(majorRadius, minorRadius, pointOffset, samples)
 
@@ -57,22 +58,10 @@ struct SpirographView : View {
   private let samples: Binding<CGFloat>
 
   init(spirographModel: SpirographModel) {
-    majorRadius = Binding<CGFloat>(
-      getValue: { spirographModel.majorRadius.value },
-      setValue: { spirographModel.majorRadius.value = $0}
-    )
-    minorRadius = Binding<CGFloat>(
-      getValue: { spirographModel.minorRadius.value },
-      setValue: { spirographModel.minorRadius.value = $0}
-    )
-    offset = Binding<CGFloat>(
-      getValue: { spirographModel.pointOffset.value },
-      setValue: { spirographModel.pointOffset.value = $0}
-    )
-    samples = Binding<CGFloat>(
-      getValue: { spirographModel.samples.value },
-      setValue: { spirographModel.samples.value = $0}
-    )
+    majorRadius = spirographModel.majorRadius.makeBinding()
+    minorRadius = spirographModel.minorRadius.makeBinding()
+    offset = spirographModel.pointOffset.makeBinding()
+    samples = spirographModel.samples.makeBinding()
     self.spirographModel = spirographModel
   }
 
@@ -115,6 +104,15 @@ struct SpirographView : View {
     }
   }
 
+}
+
+extension CurrentValueSubject {
+  func makeBinding() -> Binding<Output> {
+    Binding<Output>(
+      getValue: { self.value },
+      setValue: { self.value = $0 }
+    )
+  }
 }
 
 #if DEBUG
