@@ -19,9 +19,9 @@ class SpirographModel: BindableObject {
   }
   let willChange: AnyPublisher<Void, Never>
   let majorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMajorRadius)
-  let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMinorRadius)
-  let pointOffset: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxOffset)
-  let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples)
+  let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMinorRadius/2)
+  let pointOffset: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxOffset/2)
+  let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples/2)
   private (set) var points: [CGPoint] = []
   private var pointSubscription: AnyCancellable?
   init() {
@@ -83,7 +83,7 @@ struct SpirographView : View {
           path.addLines(self.spirographModel.points)
         }
         .applying( {
-          let rect = geometry.frame(in: .global)
+          let rect = geometry.frame(in: .local)
           let scale = min(
             rect.width / (SpirographModel.Constant.maxMajorRadius * 2),
             rect.height / (SpirographModel.Constant.maxMajorRadius * 2)
