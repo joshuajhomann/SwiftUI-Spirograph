@@ -43,8 +43,8 @@ class SpirographModel: BindableObject {
             y: CGFloat(Δr * sin(θ) + pointOffset * sin(Δr * θ / minorRadius))
           )
         }
-    }
-    .assign(to: \.points, on: self)
+      }
+      .assign(to: \.points, on: self)
   }
 
 }
