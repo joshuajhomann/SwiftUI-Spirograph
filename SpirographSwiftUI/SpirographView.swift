@@ -49,39 +49,30 @@ class SpirographModel: BindableObject {
 }
 
 struct SpirographView : View {
-  @ObjectBinding var spirographModel: SpirographModel
-  let slider1: Binding<CGFloat>
-  let slider2: Binding<CGFloat>
-  let slider3: Binding<CGFloat>
-  let slider4: Binding<CGFloat>
+  @ObjectBinding private var spirographModel: SpirographModel
+  private let majorRadius: Binding<CGFloat>
+  private let minorRadius: Binding<CGFloat>
+  private let offset: Binding<CGFloat>
+  private let samples: Binding<CGFloat>
 
   init(spirographModel: SpirographModel) {
-    slider1 = Binding<CGFloat>(
-      getValue: { [majorRadius = spirographModel.majorRadius] in majorRadius.value },
-      setValue: { [majorRadius = spirographModel.majorRadius] in majorRadius.value = $0}
+    majorRadius = Binding<CGFloat>(
+      getValue: { spirographModel.majorRadius.value },
+      setValue: { spirographModel.majorRadius.value = $0}
     )
-    slider2 = Binding<CGFloat>(
-      getValue: { [minorRadius = spirographModel.minorRadius] in minorRadius.value },
-      setValue: { [minorRadius = spirographModel.minorRadius] in minorRadius.value = $0}
+    minorRadius = Binding<CGFloat>(
+      getValue: { spirographModel.minorRadius.value },
+      setValue: { spirographModel.minorRadius.value = $0}
     )
-    slider3 = Binding<CGFloat>(
-      getValue: { [pointOffset = spirographModel.pointOffset] in pointOffset.value },
-      setValue: { [pointOffset = spirographModel.pointOffset] in pointOffset.value = $0}
+    offset = Binding<CGFloat>(
+      getValue: { spirographModel.pointOffset.value },
+      setValue: { spirographModel.pointOffset.value = $0}
     )
-    slider4 = Binding<CGFloat>(
-      getValue: { [samples = spirographModel.samples] in samples.value },
-      setValue: { [samples = spirographModel.samples] in samples.value = $0}
+    samples = Binding<CGFloat>(
+      getValue: { spirographModel.samples.value },
+      setValue: { spirographModel.samples.value = $0}
     )
     self.spirographModel = spirographModel
-  }
-
-  private func scale(to rect: CGRect) -> CGAffineTransform {
-    let scale = min(
-      rect.width / (SpirographModel.Constant.maxMajorRadius * 2),
-      rect.height / (SpirographModel.Constant.maxMajorRadius * 2)
-    )
-    return CGAffineTransform(translationX: rect.width / 2, y: rect.height / 2)
-      .scaledBy(x: scale, y: scale)
   }
 
   var body: some View {
@@ -90,43 +81,39 @@ struct SpirographView : View {
         Path { path in
           path.addLines(self.spirographModel.points)
         }
-        .applying(self.scale(to: geometry.frame(in: .global)))
+        .applying( {
+          let rect = geometry.frame(in: .global)
+          let scale = min(
+            rect.width / (SpirographModel.Constant.maxMajorRadius * 2),
+            rect.height / (SpirographModel.Constant.maxMajorRadius * 2)
+          )
+          return CGAffineTransform(translationX: rect.width / 2, y: rect.height / 2)
+            .scaledBy(x: scale, y: scale)
+          }()
+        )
         .strokedPath(.init(lineWidth: 1))
         .foregroundColor(.blue)
         .clipped()
       }
       VStack {
-        HStack {
-          Text("Major")
-            .font(.caption)
-            .frame(width: 50)
-          Slider(value: slider1, from: 0, through: SpirographModel.Constant.maxMajorRadius, by: 1)
-          Text(String(describing: Int(slider1.value))).frame(width: 40)
-        }
-        HStack {
-          Text("Minor")
-            .font(.caption)
-            .frame(width: 50)
-          Slider(value: slider2, from: 0, through: SpirographModel.Constant.maxMinorRadius, by: 1)
-          Text(String(describing: Int(slider2.value))).frame(width: 40)
-        }
-        HStack {
-          Text("Offset")
-            .font(.caption)
-            .frame(width: 50)
-          Slider(value: slider3, from: 0, through: SpirographModel.Constant.maxOffset, by: 1)
-          Text(String(describing: Int(slider3.value))).frame(width: 40)
-        }
-        HStack {
-          Text("Sample")
-            .font(.caption)
-            .frame(width: 50)
-          Slider(value: slider4, from: 2, through: SpirographModel.Constant.maxSamples, by: 1)
-          Text(String(describing: Int(slider4.value))).frame(width: 40)
-        }
+        sliderView(name: "Major", min: 0, max: SpirographModel.Constant.maxMajorRadius, binding: majorRadius)
+        sliderView(name: "Minor", min: 0, max: SpirographModel.Constant.maxMinorRadius, binding: minorRadius)
+        sliderView(name: "Offset", min: 0, max: SpirographModel.Constant.maxOffset, binding: offset)
+        sliderView(name: "Sample", min: 2, max: SpirographModel.Constant.maxSamples, binding: samples)
       }.padding()
     }
   }
+
+  private func sliderView(name: String, min: CGFloat, max: CGFloat, binding: Binding<CGFloat>) -> some View {
+    HStack {
+      Text(name)
+        .font(.caption)
+        .frame(width: 50)
+      Slider(value: binding, from: min, through: max, by: 1)
+      Text("\(Int(binding.value))").frame(width: 40)
+    }
+  }
+
 }
 
 #if DEBUG
