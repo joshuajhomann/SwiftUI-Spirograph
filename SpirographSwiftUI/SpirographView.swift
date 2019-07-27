@@ -7,50 +7,9 @@
 //
 
 import SwiftUI
-import Combine
-
-class SpirographModel: BindableObject {
-  enum Constant {
-    static let maxMajorRadius: CGFloat = 100
-    static let maxMinorRadius: CGFloat = 100
-    static let maxOffset: CGFloat = 50
-    static let maxSamples: CGFloat = 100
-    static let iterations = 1000
-  }
-  let willChange: AnyPublisher<Void, Never>
-  let majorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMajorRadius)
-  let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMinorRadius/2)
-  let pointOffset: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxOffset/2)
-  let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples/2)
-  private (set) var points: [CGPoint] = []
-  private var pointSubscription: AnyCancellable?
-
-  init() {
-    let combined = Publishers.CombineLatest4(majorRadius, minorRadius, pointOffset, samples)
-
-    willChange = combined
-      .receive(on: RunLoop.main)
-      .map { _ in () }
-      .eraseToAnyPublisher()
-
-    pointSubscription = combined
-      .map { (majorRadius, minorRadius, pointOffset, samples) -> [CGPoint] in
-        let Δr = majorRadius - minorRadius
-        let Δθ = 2 * CGFloat.pi / samples
-        return (0..<Constant.iterations).map { iteration in
-          let θ = Δθ * CGFloat(iteration)
-          return CGPoint(
-            x: CGFloat(Δr * cos(θ) + pointOffset * cos(Δr * θ / minorRadius)),
-            y: CGFloat(Δr * sin(θ) + pointOffset * sin(Δr * θ / minorRadius))
-          )
-        }
-      }
-      .assign(to: \.points, on: self)
-  }
-
-}
 
 struct SpirographView : View {
+
   @ObjectBinding private var spirographModel: SpirographModel
   private let majorRadius: Binding<CGFloat>
   private let minorRadius: Binding<CGFloat>
@@ -60,7 +19,7 @@ struct SpirographView : View {
   init(spirographModel: SpirographModel) {
     majorRadius = spirographModel.majorRadius.makeBinding()
     minorRadius = spirographModel.minorRadius.makeBinding()
-    offset = spirographModel.pointOffset.makeBinding()
+    offset = spirographModel.offset.makeBinding()
     samples = spirographModel.samples.makeBinding()
     self.spirographModel = spirographModel
   }
@@ -104,15 +63,6 @@ struct SpirographView : View {
     }
   }
 
-}
-
-extension CurrentValueSubject {
-  func makeBinding() -> Binding<Output> {
-    Binding<Output>(
-      getValue: { self.value },
-      setValue: { self.value = $0 }
-    )
-  }
 }
 
 #if DEBUG

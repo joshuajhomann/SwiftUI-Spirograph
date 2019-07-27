@@ -13,6 +13,8 @@
 		0334D36422BDF76F00BE553C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0334D36322BDF76F00BE553C /* Assets.xcassets */; };
 		0334D36722BDF76F00BE553C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0334D36622BDF76F00BE553C /* Preview Assets.xcassets */; };
 		0334D36A22BDF76F00BE553C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0334D36822BDF76F00BE553C /* LaunchScreen.storyboard */; };
+		03F563AB22E74F8500A917E2 /* SpirographModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F563AA22E74F8500A917E2 /* SpirographModel.swift */; };
+		03F563AD22E74FEC00A917E2 /* CurrentValueSubject+Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F563AC22E74FEC00A917E2 /* CurrentValueSubject+Bindable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		0334D36922BDF76F00BE553C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0334D36B22BDF76F00BE553C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		03EA8B6022E57D77007F83D4 /* SpirographSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpirographSwiftUI.entitlements; sourceTree = "<group>"; };
+		03F563AA22E74F8500A917E2 /* SpirographModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpirographModel.swift; path = ../../../../../System/Volumes/Data/Users/josh/Develop/SpirographSwiftUI/SpirographSwiftUI/SpirographModel.swift; sourceTree = "<group>"; };
+		03F563AC22E74FEC00A917E2 /* CurrentValueSubject+Bindable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CurrentValueSubject+Bindable.swift"; path = "../../../../../System/Volumes/Data/Users/josh/Develop/SpirographSwiftUI/SpirographSwiftUI/CurrentValueSubject+Bindable.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,8 @@
 				0334D35D22BDF76C00BE553C /* AppDelegate.swift */,
 				0334D35F22BDF76C00BE553C /* SceneDelegate.swift */,
 				0334D36122BDF76C00BE553C /* SpirographView.swift */,
+				03F563AA22E74F8500A917E2 /* SpirographModel.swift */,
+				03F563AC22E74FEC00A917E2 /* CurrentValueSubject+Bindable.swift */,
 				0334D36322BDF76F00BE553C /* Assets.xcassets */,
 				0334D36822BDF76F00BE553C /* LaunchScreen.storyboard */,
 				0334D36B22BDF76F00BE553C /* Info.plist */,
@@ -148,6 +154,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03F563AD22E74FEC00A917E2 /* CurrentValueSubject+Bindable.swift in Sources */,
+				03F563AB22E74F8500A917E2 /* SpirographModel.swift in Sources */,
 				0334D35E22BDF76C00BE553C /* AppDelegate.swift in Sources */,
 				0334D36022BDF76C00BE553C /* SceneDelegate.swift in Sources */,
 				0334D36222BDF76C00BE553C /* SpirographView.swift in Sources */,
