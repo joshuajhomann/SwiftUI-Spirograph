@@ -2,4 +2,4 @@
 
 This project generates a spirograph using SwiftUI and Combine.
 
-[example]: ./spirograph.gif "Spirograph"
+![example](https://github.com/joshuajhomann/SwiftUI-Spirograph/blob/master/readme.md/spirograph.gif)
