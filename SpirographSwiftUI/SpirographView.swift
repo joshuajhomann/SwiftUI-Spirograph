@@ -66,7 +66,7 @@ struct SpirographView : View {
 }
 
 #if DEBUG
-struct ContentView_Previews : PreviewProvider {
+struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     SpirographView(spirographModel: SpirographModel())
   }

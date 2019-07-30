@@ -24,11 +24,16 @@ class SpirographModel: BindableObject {
   let minorRadius: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxMinorRadius/2)
   let offset: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxOffset/2)
   let samples: CurrentValueSubject<CGFloat, Never> = .init(Constant.maxSamples/2)
-  private (set) var points: [CGPoint] = []
+  private (set) var points: [CGPoint] = SpirographModel
+    .makeSpirograph(
+      majorRadius: Constant.maxMajorRadius,
+      minorRadius: Constant.maxMinorRadius/2,
+      offset: Constant.maxOffset/2,
+      samples: Constant.maxSamples/2
+    )
   private var pointSubscription: AnyCancellable?
 
   init() {
-
     let input = Publishers.CombineLatest4(majorRadius, minorRadius, offset, samples)
 
     willChange = input
@@ -36,20 +41,21 @@ class SpirographModel: BindableObject {
       .map { _ in () }
       .eraseToAnyPublisher()
 
-    pointSubscription = willChange
-      .map { _ in self.makeSpirograph() }
+    pointSubscription = input
+      .drop(untilOutputFrom: willChange)
+      .map { SpirographModel.makeSpirograph(majorRadius: $0.0, minorRadius: $0.1, offset: $0.2, samples: $0.3) }
       .assign(to: \.points, on: self)
 
   }
 
-  private func makeSpirograph() -> [CGPoint] {
-    let Δr = majorRadius.value - minorRadius.value
-    let Δθ = 2 * CGFloat.pi / samples.value
+  private static func makeSpirograph(majorRadius: CGFloat, minorRadius: CGFloat, offset: CGFloat, samples: CGFloat) -> [CGPoint] {
+    let Δr = majorRadius - minorRadius
+    let Δθ = 2 * CGFloat.pi / samples
     return (0..<Constant.iterations).map { iteration in
       let θ = Δθ * CGFloat(iteration)
       return CGPoint(
-        x: CGFloat(Δr * cos(θ) + offset.value  * cos(Δr * θ / minorRadius.value )),
-        y: CGFloat(Δr * sin(θ) + offset.value  * sin(Δr * θ / minorRadius.value ))
+        x: CGFloat(Δr * cos(θ) + offset  * cos(Δr * θ / minorRadius )),
+        y: CGFloat(Δr * sin(θ) + offset  * sin(Δr * θ / minorRadius ))
       )
     }
   }
