@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SpirographView : View {
 
-  @ObjectBinding private var spirographModel: SpirographModel
+  @ObservedObject private var spirographModel: SpirographModel
   private let majorRadius: Binding<CGFloat>
   private let minorRadius: Binding<CGFloat>
   private let offset: Binding<CGFloat>
@@ -58,8 +58,8 @@ struct SpirographView : View {
       Text(name)
         .font(.caption)
         .frame(width: 50)
-      Slider(value: binding, from: min, through: max, by: 1)
-      Text("\(Int(binding.value))").frame(width: 40)
+      Slider(value: binding, in: (min...max))
+      Text("\(Int(binding.wrappedValue))").frame(width: 40)
     }
   }
 

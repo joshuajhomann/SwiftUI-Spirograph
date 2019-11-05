@@ -12,8 +12,8 @@ import Combine
 extension CurrentValueSubject {
   func makeBinding() -> Binding<Output> {
     Binding<Output>(
-      getValue: { self.value },
-      setValue: { self.value = $0 }
+      get: { self.value },
+      set: { self.value = $0 }
     )
   }
 }
